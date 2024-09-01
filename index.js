@@ -65,73 +65,7 @@ function ratingQuery(sessionDate) {
 }
 // Matches "/echo [whatever]"
 
-async function ktm() {
 
-
-  const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-      ],
-  });
-  let page = await browser.newPage();
-  await page.goto('https://shuttleonline.ktmb.com.my/Home/Shuttle', { waitUntil: 'networkidle2' })
-
-
-  try {
-      await page.waitForSelector('#validationSummaryModal > div > div > div.modal-body > div > div.text-center > button')
-      await page.click('#validationSummaryModal > div > div > div.modal-body > div > div.text-center > button')
-      await page.waitForSelector('#validationSummaryModal > div > div > div.modal-body > div > div.text-center > button', { hidden: true });
-  } catch {
-  
-  }
-  await new Promise(resolve => setTimeout(resolve, 2000));
-  
-  await page.click('#btnSubmit')
-
-  await page.waitForSelector('#theForm > div > div:nth-child(1) > i')
-  await page.click('#theForm > div > div:nth-child(1) > i')
-
-
-  await page.waitForSelector('#OnwardDate')
-  await page.click('#OnwardDate')
-
-  await page.waitForSelector('body > section > div > div.lightpick__months > section > div.lightpick__days > div:nth-child(34)')
-  await page.click('body > section > div > div.lightpick__months > section > div.lightpick__days > div:nth-child(34)')
-
-
-  await page.waitForSelector('#btnSubmit')
-  let data = await page.evaluate(() => {
-      return document.querySelector('#btnSubmit').innerText
-  })
-  await page.click('#btnSubmit')
-
-
-
-
-  await page.waitForSelector('body > div.container-fluid.body.plr0 > div.col-md-12 > div > div.col-md-10.col-sm-12.mt10 > div.DepartSection > div:nth-child(1) > div > div.padd1015.station-d.text-center')
-
-  let results = ""
-  for (let i = 1; i < 14; i++) {
-      let data2 = await page.evaluate((i) => {
-          let time = document.querySelector(`body > div.container-fluid.body.plr0 > div.col-md-12 > div > div.col-md-10.col-sm-12.mt10 > div.DepartSection > div:nth-child(3) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(2)`).innerText
-          let seats = document.querySelector(`body > div.container-fluid.body.plr0 > div.col-md-12 > div > div.col-md-10.col-sm-12.mt10 > div.DepartSection > div:nth-child(3) > div > table > tbody > tr:nth-child(${i}) > td:nth-child(5)`).innerText
-          if (seats.trim() != "0") {
-              return (time + ":" + seats + "\n")
-          } else {
-              return ("")
-          }
-      }, i)
-      results = results + data2
-
-  }
-  console.log("Results\n"+results)
-  await page.close()
-  await browser.close()
-  return ("Results\n"+results)
-
-}
 
 bot.sendMessage(200418207, 'Bot started')
 bot.on('message', (msg) => {
